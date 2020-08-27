@@ -25,9 +25,8 @@ public class AimTargetBehaviour : MonoBehaviour {
 				maxDistance,
 				raycastLayers)) {
 			newDistance = (hit.point - transform.position).magnitude;
-
-
 		}
+
 		if (currentDistance > newDistance) {
 			if (currentDistance - newDistance > maxChange)
 				newDistance = currentDistance - maxChange;
