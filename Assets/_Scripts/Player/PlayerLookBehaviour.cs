@@ -32,8 +32,16 @@ public class PlayerLookBehaviour : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
+		if (!PlayerState.Instance.isViewingSac) {
+			UpdateYaw();
+			UpdatePitch();
+			UpdateRoll();
+		}
+	}
 
-		// Yaw (looking left and right)
+	void UpdateYaw() {
+
+
 		var localEuler = head.localRotation.eulerAngles;
 		var zeroCenteredYawAngle = localEuler.y > 180 ? localEuler.y - 360 : localEuler.y;
 		var desiredYawAngle = zeroCenteredYawAngle;
@@ -58,15 +66,16 @@ public class PlayerLookBehaviour : MonoBehaviour {
 			* maxTorque
 			* neckBodyCurveEvaluation;
 		body.AddTorque(yawTorque, ForceMode.Acceleration);
+	}
 
-		// Pitch (looking up and down)
-		localEuler = head.localRotation.eulerAngles;
+	void UpdatePitch() {
+		var localEuler = head.localRotation.eulerAngles;
 		var zeroCenteredPitchAngle = localEuler.x > 180 ? localEuler.x - 360 : localEuler.x;
 		var desiredPitchAngle = zeroCenteredPitchAngle;
 		desiredPitchAngle += pitchInput;
 		desiredPitchAngle = Mathf.Clamp(desiredPitchAngle, -headPitchRange, headPitchRange);
 
-		neckBodyCurveEvaluation = 0.5f;
+		var neckBodyCurveEvaluation = 0.5f;
 		if (pitchInput != 0)
 			neckBodyCurveEvaluation = neckBodyCurve.Evaluate(
 				pitchInput / Mathf.Abs(pitchInput)
@@ -84,7 +93,9 @@ public class PlayerLookBehaviour : MonoBehaviour {
 			* maxTorque
 			* neckBodyCurveEvaluation;
 		body.AddTorque(-pitchTorque, ForceMode.Acceleration);
+	}
 
+	void UpdateRoll() {
 		var rollTorque = orientationReference.forward
 			* rollInput
 			* maxTorque

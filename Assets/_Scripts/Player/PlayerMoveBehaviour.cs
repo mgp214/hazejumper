@@ -9,6 +9,9 @@ public class PlayerMoveBehaviour : MonoBehaviour {
 	public new Rigidbody rigidbody;
 
 	void FixedUpdate() {
+		if (PlayerState.Instance.isViewingSac)
+			return;
+
 		var direction = new Vector3(
 			Input.GetAxis("Right / Left"),
 			Input.GetAxis("Up / Down"),
@@ -16,11 +19,7 @@ public class PlayerMoveBehaviour : MonoBehaviour {
 		);
 
 		var appliedForce = direction.normalized * maxForce;
-
 		appliedForce = orientationReference.TransformDirection(appliedForce);
 		rigidbody.AddForce(appliedForce, ForceMode.Force);
-
-
-
 	}
 }

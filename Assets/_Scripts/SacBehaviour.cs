@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using static Chunk;
 
 public class SacBehaviour : MonoBehaviour {
-	public float editorSize;
+	public float size;
 	public float viewSize;
 	public float rotateSpeed;
 
@@ -14,12 +14,12 @@ public class SacBehaviour : MonoBehaviour {
 
 	public RawImage sacView;
 	public float zoomCoefficient;
-	public GameObject player, walls, cameraObj;
+	public GameObject player, cameraObj;
 	private static SacBehaviour _Instance;
-	private float size;
+
 	private float screenWidth, screenHeight;
 	private new Rigidbody rigidbody;
-	private new Camera camera;
+	public new Camera camera;
 	private List<Rigidbody> contents;
 
 	public static SacBehaviour Instance {
@@ -49,9 +49,6 @@ public class SacBehaviour : MonoBehaviour {
 
 	private void Start() {
 		Instance = this;
-		walls = transform.Find("Walls").gameObject;
-		cameraObj = transform.Find("Camera").gameObject;
-		camera = cameraObj.transform.GetChild(1).GetComponent<Camera>();
 		rigidbody = GetComponent<Rigidbody>();
 		contents = new List<Rigidbody>();
 		size = 2;
@@ -85,6 +82,7 @@ public class SacBehaviour : MonoBehaviour {
 	private void Update() {
 		if (Input.GetButtonDown("Toggle SAC") && ((!PlayerBehaviour.Instance.IsBusy) || (PlayerBehaviour.Instance.ActiveUseable is SubspacerBehaviour))) {
 			IsMaximized = !IsMaximized;
+			PlayerState.Instance.isViewingSac = IsMaximized;
 			if (IsMaximized) {
 				Maximize();
 				ToggleCursor(false);
@@ -116,10 +114,10 @@ public class SacBehaviour : MonoBehaviour {
 				item.position = rigidbody.position;
 			}
 		}
-		if (size != editorSize) {
-			size = editorSize;
+		if (transform.localScale.x != size) {
+			transform.localScale = Vector3.one * size;
+			gameObject.GetComponentInChildren<Light>().range = size * 2.5f;
 		}
-		transform.localScale = Vector3.one * size;
 	}
 
 	void LookUpdate() {
