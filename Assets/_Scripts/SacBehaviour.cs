@@ -134,15 +134,11 @@ public class SacBehaviour : MonoBehaviour {
 
 	void InputUpdate() {
 		var primaryDown = Input.GetButtonDown("Primary Action");
-		var primary = Input.GetButton("Primary Action");
-		var primaryUp = Input.GetButtonUp("Primary Action");
 		if (SubspacerBehaviour.Instance.Chunk != null) {
 			var horizontal = Input.GetAxis("Yaw");
 			var vertical = -Input.GetAxis("Pitch");
-			var zoom = -Input.GetAxis("Switch Equipped") * zoomCoefficient;
-			var offset = new Vector3(horizontal, vertical, zoom) * SubspacerBehaviour.Instance.force * Time.deltaTime * size;
-			offset = cameraObj.transform.TransformDirection(offset);
-			//SubspacerBehaviour.Instance.Chunk.rigidbody.AddForce(offset, ForceMode.VelocityChange);
+			var zoom = Input.GetAxis("Switch Equipped") * zoomCoefficient;
+			var offset = new Vector3(horizontal, -vertical, zoom) * SubspacerBehaviour.Instance.force * Time.deltaTime * size;
 			SubspacerBehaviour.Instance.Offset(offset);
 
 			//handle rotation logic
