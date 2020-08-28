@@ -15,7 +15,7 @@ public class SubspacerBehaviour : Useable {
 
 	private Vector3 offset;
 
-	private Transform player;
+	public Transform player;
 
 	[SerializeField]
 	private bool _IsEligible;
@@ -105,7 +105,6 @@ public class SubspacerBehaviour : Useable {
 		onSelected += Selected;
 		onDeselected += Deselected;
 		onPrimaryDown += Grab;
-		player = transform.parent;
 		if (_Instance != null)
 			throw new System.Exception("Cannot instantiate more than one Subspacer!");
 		_Instance = this;

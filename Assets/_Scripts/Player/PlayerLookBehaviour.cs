@@ -32,7 +32,7 @@ public class PlayerLookBehaviour : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (!PlayerState.Instance.isViewingSac) {
+		if (!PlayerCoordinator.Instance.interceptedMovementInput) {
 			UpdateYaw();
 			UpdatePitch();
 			UpdateRoll();

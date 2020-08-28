@@ -82,7 +82,7 @@ public class SacBehaviour : MonoBehaviour {
 	private void Update() {
 		if (Input.GetButtonDown("Toggle SAC") && ((!PlayerBehaviour.Instance.IsBusy) || (PlayerBehaviour.Instance.ActiveUseable is SubspacerBehaviour))) {
 			IsMaximized = !IsMaximized;
-			PlayerState.Instance.isViewingSac = IsMaximized;
+			PlayerCoordinator.Instance.interceptedMovementInput = IsMaximized;
 			if (IsMaximized) {
 				Maximize();
 				ToggleCursor(false);
@@ -116,7 +116,7 @@ public class SacBehaviour : MonoBehaviour {
 		}
 		if (transform.localScale.x != size) {
 			transform.localScale = Vector3.one * size;
-			gameObject.GetComponentInChildren<Light>().range = size * 2.5f;
+			gameObject.GetComponentInChildren<Light>().range = size * 5f;
 		}
 	}
 

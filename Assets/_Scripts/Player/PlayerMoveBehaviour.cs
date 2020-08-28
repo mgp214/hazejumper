@@ -9,7 +9,7 @@ public class PlayerMoveBehaviour : MonoBehaviour {
 	public new Rigidbody rigidbody;
 
 	void FixedUpdate() {
-		if (PlayerState.Instance.isViewingSac)
+		if (PlayerCoordinator.Instance.interceptedMovementInput)
 			return;
 
 		var direction = new Vector3(

@@ -8,12 +8,6 @@ using UnityEngine.UI;
 /// Behaviour logic for the Player object.
 /// </summary>
 public class PlayerBehaviour : MonoBehaviour {
-	// public float lookTorque;
-	// public float angDampingLimit;
-	// public float angDampingCoeff;
-	// public float moveForce;
-	// public float moveDampingLimit;
-	// public float moveDampingCoeff;
 	public Useable[] useables;
 
 	public bool isBusy;
@@ -58,9 +52,6 @@ public class PlayerBehaviour : MonoBehaviour {
 		_Instance = this;
 		rigidbody = GetComponent<Rigidbody>();
 		initialMassCoefficient = rigidbody.mass;
-		// moveForce *= initialMassCoefficient;
-		// lookTorque *= initialMassCoefficient;
-		// moveDampingLimit *= initialMassCoefficient;
 		ActiveUseable = useables[selectedUseableSlot];
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;

@@ -6,7 +6,7 @@ using UnityEngine;
 /// A Proxy object that lives between the a "stiff" object (FixedJoint) and "soft/wiggly object (array of SpringJoints)
 /// </summary>
 public class ManipulatorProxyBehaviour : MonoBehaviour {
-	private GameObject fixedObj, springObj;
+	private GameObject fixedFollowObj, fixedObj, springObj;
 	private FixedJoint fixedJoint;
 
 	/// <summary>
@@ -23,16 +23,31 @@ public class ManipulatorProxyBehaviour : MonoBehaviour {
 	/// <returns></returns>
 	public static GameObject Create(GameObject fixedObj, GameObject springObj, float breakForce, float breakTorque, float offsetAmount, float damper, float spring, float massScale) {
 		var gameObject = new GameObject("Manipulator Proxy");
+
+
 		gameObject.transform.position = springObj.transform.position;
 		var rigidbody = gameObject.AddComponent<Rigidbody>();
 		rigidbody.useGravity = false;
 		var manipulatorProxyBehaviour = gameObject.AddComponent<ManipulatorProxyBehaviour>();
-		manipulatorProxyBehaviour.fixedObj = fixedObj;
+
 		manipulatorProxyBehaviour.springObj = springObj;
+		var fixedRigidbody = fixedObj.GetComponent<Rigidbody>();
+		if (fixedRigidbody == null) {
+			manipulatorProxyBehaviour.fixedFollowObj = fixedObj;
+			var newFixedObj = new GameObject("Manipulator Proxy Fixed Object Follower");
+			newFixedObj.transform.position = manipulatorProxyBehaviour.fixedFollowObj.transform.position;
+			newFixedObj.transform.rotation = manipulatorProxyBehaviour.fixedFollowObj.transform.rotation;
+			fixedRigidbody = newFixedObj.AddComponent<Rigidbody>();
+			fixedRigidbody.isKinematic = true;
+			manipulatorProxyBehaviour.fixedObj = newFixedObj;
+		} else {
+			manipulatorProxyBehaviour.fixedObj = fixedObj;
+		}
+
 
 		var fixedJoint = gameObject.AddComponent<FixedJoint>();
 		manipulatorProxyBehaviour.fixedJoint = fixedJoint;
-		fixedJoint.connectedBody = fixedObj.GetComponent<Rigidbody>();
+		fixedJoint.connectedBody = fixedRigidbody;
 		fixedJoint.massScale = massScale;
 		fixedJoint.breakForce = breakForce;
 		fixedJoint.breakTorque = breakTorque;
@@ -48,7 +63,7 @@ public class ManipulatorProxyBehaviour : MonoBehaviour {
 		foreach (var v in offsets) {
 			var joint = gameObject.AddComponent<SpringJoint>();
 			joint.autoConfigureConnectedAnchor = false;
-			joint.anchor = v;
+			joint.anchor = v * 0.75f;
 			joint.connectedAnchor = springObj.transform.InverseTransformDirection(v);
 			joint.maxDistance = Vector3.Distance(gameObject.transform.TransformDirection(joint.anchor), springObj.transform.TransformDirection(joint.connectedAnchor));
 			joint.minDistance = Vector3.Distance(gameObject.transform.TransformDirection(joint.anchor), springObj.transform.TransformDirection(joint.connectedAnchor));
@@ -74,11 +89,22 @@ public class ManipulatorProxyBehaviour : MonoBehaviour {
 	private void Update() {
 		if (fixedObj == null || springObj == null) {
 			Destroy(gameObject);
+			if (fixedFollowObj != null) Destroy(fixedObj);
+			fixedFollowObj = null;
 		}
+		if (fixedFollowObj != null) {
+			fixedObj.transform.position = fixedFollowObj.transform.position;
+			fixedObj.transform.rotation = fixedFollowObj.transform.rotation;
+		}
+
 	}
 
 	private void OnJointBreak(float breakForce) {
 		ManipulatorBehaviour.Instance.RemoveAnchor(springObj.GetComponent<Chunk>());
+		if (fixedFollowObj != null) {
+			Destroy(fixedObj);
+			fixedObj = null;
+		}
 	}
 
 	private void OnDrawGizmos() {

@@ -22,7 +22,7 @@ public class ManipulatorBehaviour : Useable {
 	public List<GameObject> anchorList;
 	public List<Chunk> anchoredChunks;
 	private float deployedFraction;
-	private GameObject proxy;
+	public GameObject proxy;
 	private Rigidbody chunkJustAnchored;
 
 	/// <summary>
@@ -150,7 +150,7 @@ public class ManipulatorBehaviour : Useable {
 			//Debug.DrawLine(barrel.position, barrel.position + barrel.forward * range, Color.red, 1);
 			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, range, grabbableLayers) && hit.rigidbody != chunkJustAnchored) {
-				proxy = ManipulatorProxyBehaviour.Create(transform.parent.gameObject, hit.rigidbody.gameObject, breakForce, breakTorque, offsetAmount, damper, spring, massScale);
+				proxy = ManipulatorProxyBehaviour.Create(PlayerCoordinator.Instance.camera.gameObject, hit.rigidbody.gameObject, breakForce, breakTorque, offsetAmount, damper, spring, massScale);
 				var chunk = hit.rigidbody.GetComponent<Chunk>();
 				for (int i = 0; i < anchorList.Count; i++) {
 					var anchor = anchorList[i];
@@ -165,10 +165,11 @@ public class ManipulatorBehaviour : Useable {
 			}
 		}
 		if (modifier && proxy) {
-			var x = Input.GetAxis("Forwards / Backwards");
+			PlayerCoordinator.Instance.interceptedMovementInput = true;
+			var x = Input.GetAxis("Forward / Backward");
 			var y = -Input.GetAxis("Right / Left");
 			var z = Input.GetAxis("Roll");
-			var zoom = -Input.GetAxis("Switch Equipped") * zoomSpeed * Time.deltaTime;
+			var zoom = Input.GetAxis("Switch Equipped") * zoomSpeed * Time.deltaTime;
 			var rotateVector = new Vector3(x, y, z) * rotateSpeed * Time.deltaTime;
 			var proxyJoint = proxy.GetComponent<FixedJoint>();
 			var proxyRigidbody = proxy.GetComponent<Rigidbody>();
@@ -179,6 +180,8 @@ public class ManipulatorBehaviour : Useable {
 			proxy.transform.Rotate(transform.parent.up, y, Space.World);
 			proxy.transform.Translate(transform.parent.forward * zoom, Space.World);
 			proxyJoint.connectedBody = buffer;
+		} else {
+			PlayerCoordinator.Instance.interceptedMovementInput = false;
 		}
 	}
 
