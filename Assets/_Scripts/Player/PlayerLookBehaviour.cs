@@ -27,7 +27,7 @@ public class PlayerLookBehaviour : MonoBehaviour {
 
 	void Update() {
 		yawInput = Mathf.Lerp(yawInput, Input.GetAxis("Yaw") * mouseSensitivity, inputSmoothing);
-		pitchInput = Mathf.Lerp(pitchInput, Input.GetAxis("Pitch") * mouseSensitivity, inputSmoothing);
+		pitchInput = Mathf.Lerp(pitchInput, -Input.GetAxis("Pitch") * mouseSensitivity, inputSmoothing);
 		rollInput = Mathf.Lerp(rollInput, Input.GetAxis("Roll") * mouseSensitivity, inputSmoothing);
 	}
 
@@ -88,7 +88,7 @@ public class PlayerLookBehaviour : MonoBehaviour {
 			desiredPitchAngle,
 			1 - neckBodyCurveEvaluation);
 		head.localRotation = Quaternion.Euler(appliedPitchAngle, localEuler.y, localEuler.z);
-		var pitchTorque = orientationReference.right
+		var pitchTorque = -orientationReference.right
 			* pitchInput
 			* maxTorque
 			* neckBodyCurveEvaluation;
