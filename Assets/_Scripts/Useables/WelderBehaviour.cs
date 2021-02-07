@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class WelderBehaviour : Useable {
 	public float range;
@@ -10,6 +11,16 @@ public class WelderBehaviour : Useable {
 	public float cooldown;
 	public float compressionStrength, tensileStrength, shearStrength;
 	public float deploySeconds;
+
+	public Light arcLight;
+	public VisualEffect arcEffect;
+	private bool arcEffectIsPlaying = false;
+	public float minIntensity, maxIntensity;
+	[Range(0, 1)]
+	public float arcInstability;
+
+	[Range(0, 1)]
+	public float arcFadeRate;
 
 	private static int weldCount = 0;
 	private float deployedFraction;
@@ -48,6 +59,12 @@ public class WelderBehaviour : Useable {
 		onSelected += Selected;
 		onDeselected += Deselected;
 		onPrimary += Weld;
+		onPrimaryUp += () => {
+			arcEffectIsPlaying = false;
+			arcEffect.Stop();
+		};
+		onIdle += Idle;
+		arcEffect.Stop();
 		CanSwitchOut = true;
 	}
 
@@ -78,6 +95,11 @@ public class WelderBehaviour : Useable {
 		if (cooldownRemaining == 0) {
 			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, range, LayerMask.GetMask("Chunks"))) {
+				if (!arcEffectIsPlaying) {
+					arcEffect.Play();
+					arcEffectIsPlaying = true;
+				}
+				arcLight.intensity = Mathf.Lerp(arcLight.intensity, Random.Range(minIntensity, maxIntensity), arcInstability);
 				//don't create a weld if we're too close to an existing weld.
 				var distance = Vector3.Distance(ray.origin, hit.point);
 				var nearbyThings = Physics.OverlapSphere(hit.point, weldSize, LayerMask.GetMask("Chunks"));
@@ -93,9 +115,22 @@ public class WelderBehaviour : Useable {
 				if (!weldTooNear) {
 					CreateWeld(hit.point);
 				}
+			} else if (arcEffectIsPlaying) {
+				arcEffect.Stop();
+				arcEffectIsPlaying = false;
 			}
+
 		} else {
 			//otherwise, do some cooling
+			cooldownRemaining -= Time.deltaTime;
+			cooldownRemaining = Mathf.Max(0, cooldownRemaining);
+
+		}
+	}
+
+	private void Idle() {
+		arcLight.intensity = Mathf.Lerp(arcLight.intensity, 0, arcFadeRate);
+		if (cooldownRemaining > 0) {
 			cooldownRemaining -= Time.deltaTime;
 			cooldownRemaining = Mathf.Max(0, cooldownRemaining);
 		}

@@ -1,5 +1,0 @@
-The model used in the example scenes is a modified version of “Sintel Lite” (http://www.blendswap.com/blends/view/7093) by Ben Dansie (http://www.bendansie.com), released under the CC-BY license (http://creativecommons.org/licenses/by/3.0/).
-
-A custom rig, weighting and blend shapes were added for exemplary purposes.
-
-Many thanks to Ben and the Blender/ Sintel team (http://www.blender.org, http://sintel.org) for creating and sharing this character!
