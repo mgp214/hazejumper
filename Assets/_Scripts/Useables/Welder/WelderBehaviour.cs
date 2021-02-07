@@ -7,6 +7,7 @@ using UnityEngine.VFX;
 public class WelderBehaviour : Useable {
 	public float range;
 	public float weldSize;
+	public float weldBackoff;
 	public float weldMinDistance;
 	public float cooldown;
 	public float compressionStrength, tensileStrength, shearStrength;
@@ -21,6 +22,8 @@ public class WelderBehaviour : Useable {
 
 	[Range(0, 1)]
 	public float arcFadeRate;
+
+	public Material weldMaterial;
 
 	private static int weldCount = 0;
 	private float deployedFraction;
@@ -69,24 +72,26 @@ public class WelderBehaviour : Useable {
 	}
 
 	private GameObject CreateWeld(Vector3 position) {
-		var weld = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		weld.name = "Weld " + ++weldCount;
-		weld.layer = LayerMask.NameToLayer("Chunks");
-		var weldThing = weld.AddComponent<WeldThing>();
-		weldThing.mass = 0.01f;
-		weld.transform.localScale = Vector3.one * weldSize;
+		// var weld = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		var weld = new GameObject($"Weld {++weldCount}");
 		weld.transform.position = position;
+		// weld.name = "Weld " + ++weldCount;
+		// weld.layer = LayerMask.NameToLayer("Chunks");
+		var weldThing = weld.AddComponent<WeldThing>();
+		// weldThing.mass = 0.01f;
 		cooldownRemaining = cooldown;
-		weldThing.Initialize();
-		weldThing.compressionStrength = compressionStrength;
-		weldThing.tensileStrength = tensileStrength;
-		weldThing.shearStrength = shearStrength;
-		var hits = Physics.OverlapSphere(weld.transform.position, weld.transform.localScale.x, LayerMask.GetMask("Chunks"));
-		var things = hits.Where(c => !(Thing.GetThing(c) is WeldThing)).Distinct();
-		foreach (var hit in things) {
-			var thing = Thing.GetThing(hit);
-			thing.Connect(weldThing, hit.ClosestPoint(weldThing.transform.position) - weldThing.transform.position);
-		}
+		weldThing.BuildWeld(weldMaterial, weldSize, compressionStrength, tensileStrength, shearStrength);
+		// weldThing.Initialize();
+		// weldThing.compressionStrength = compressionStrength;
+		// weldThing.tensileStrength = tensileStrength;
+		// weldThing.shearStrength = shearStrength;
+		// var hits = Physics.OverlapSphere(weld.transform.position, weld.transform.localScale.x, LayerMask.GetMask("Chunks"));
+		// var things = hits.Where(c => !(Thing.GetThing(c) is WeldThing)).Distinct();
+		// foreach (var hit in things) {
+		// 	var thing = Thing.GetThing(hit);
+		// 	thing.Connect(weldThing, hit.ClosestPoint(weldThing.transform.position) - weldThing.transform.position);
+		// }
+
 		return weld;
 	}
 
@@ -95,25 +100,29 @@ public class WelderBehaviour : Useable {
 		if (cooldownRemaining == 0) {
 			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, range, LayerMask.GetMask("Chunks"))) {
+
+				var adjustedHitPoint = hit.point
+					- (ray.direction.normalized * weldBackoff);
+
 				if (!arcEffectIsPlaying) {
 					arcEffect.Play();
 					arcEffectIsPlaying = true;
 				}
 				arcLight.intensity = Mathf.Lerp(arcLight.intensity, Random.Range(minIntensity, maxIntensity), arcInstability);
 				//don't create a weld if we're too close to an existing weld.
-				var distance = Vector3.Distance(ray.origin, hit.point);
-				var nearbyThings = Physics.OverlapSphere(hit.point, weldSize, LayerMask.GetMask("Chunks"));
+				var distance = Vector3.Distance(ray.origin, adjustedHitPoint);
+				var nearbyThings = Physics.OverlapSphere(adjustedHitPoint, weldSize, LayerMask.GetMask("Chunks"));
 				var nearbyWelds = nearbyThings.Where(c => Thing.GetThing(c) is WeldThing);
 				var weldTooNear = false;
 				if (Thing.GetThing(hit.collider) is WeldThing)
 					weldTooNear = true;
 				foreach (var w in nearbyWelds) {
-					weldTooNear = weldTooNear || Vector3.Distance(w.transform.position, hit.point) <= weldMinDistance;
+					weldTooNear = weldTooNear || Vector3.Distance(w.transform.position, adjustedHitPoint) <= weldMinDistance;
 					if (weldTooNear)
 						break;
 				}
 				if (!weldTooNear) {
-					CreateWeld(hit.point);
+					CreateWeld(adjustedHitPoint);
 				}
 			} else if (arcEffectIsPlaying) {
 				arcEffect.Stop();
