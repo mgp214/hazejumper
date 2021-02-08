@@ -231,7 +231,7 @@ public class Chunk : MonoBehaviour {
 				if (Physics.CheckSphere(thing.transform.position + sphereCollider.center, sphereCollider.radius * scaleMax, layers))
 					return true;
 			} else {
-				Debug.LogError($"{thing.name} has a non-standard collider!");
+				Debug.LogError($"{thing.name} has a non-standard collider of type {thing.collider.GetType()}!");
 				return true;
 			}
 		}

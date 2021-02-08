@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class Useable : MonoBehaviour {
 
+	public Transform IkAimTransform;
+
 	/// <summary>
 	/// Called each frame the primary action is held down.
 	/// </summary>

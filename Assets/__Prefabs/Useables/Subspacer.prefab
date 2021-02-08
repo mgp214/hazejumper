@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c30bd5e9c3d82264d986e1cf7642e0c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IkAimTransform: {fileID: 897912413571546851}
   deploySeconds: 0.4
   range: 3
   force: 5
@@ -201,6 +202,36 @@ MonoBehaviour:
       length: 0
       sqrMag: 0
       axis: {x: 0.04042454, y: 0.05667306, z: 0.02333916}
+--- !u!1 &9126776037127572734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 897912413571546851}
+  m_Layer: 0
+  m_Name: ik aim transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &897912413571546851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9126776037127572734}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.08, z: 0.0968}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 9141201082872395357}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8743361057037947318
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -291,7 +322,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ed67e235b0b966f4f9fe7c6565491593,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1726316827706586922, guid: ed67e235b0b966f4f9fe7c6565491593,
         type: 3}

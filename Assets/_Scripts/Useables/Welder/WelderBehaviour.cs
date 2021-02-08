@@ -72,26 +72,11 @@ public class WelderBehaviour : Useable {
 	}
 
 	private GameObject CreateWeld(Vector3 position) {
-		// var weld = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 		var weld = new GameObject($"Weld {++weldCount}");
 		weld.transform.position = position;
-		// weld.name = "Weld " + ++weldCount;
-		// weld.layer = LayerMask.NameToLayer("Chunks");
 		var weldThing = weld.AddComponent<WeldThing>();
-		// weldThing.mass = 0.01f;
 		cooldownRemaining = cooldown;
 		weldThing.BuildWeld(weldMaterial, weldSize, compressionStrength, tensileStrength, shearStrength);
-		// weldThing.Initialize();
-		// weldThing.compressionStrength = compressionStrength;
-		// weldThing.tensileStrength = tensileStrength;
-		// weldThing.shearStrength = shearStrength;
-		// var hits = Physics.OverlapSphere(weld.transform.position, weld.transform.localScale.x, LayerMask.GetMask("Chunks"));
-		// var things = hits.Where(c => !(Thing.GetThing(c) is WeldThing)).Distinct();
-		// foreach (var hit in things) {
-		// 	var thing = Thing.GetThing(hit);
-		// 	thing.Connect(weldThing, hit.ClosestPoint(weldThing.transform.position) - weldThing.transform.position);
-		// }
-
 		return weld;
 	}
 

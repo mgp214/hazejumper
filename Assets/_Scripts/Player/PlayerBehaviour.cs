@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using RootMotion.FinalIK;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,9 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerBehaviour : MonoBehaviour {
 	public Useable[] useables;
-
 	public bool isBusy;
 	public Text interactionText;
+	public AimIK aimIk;
 	private static PlayerBehaviour _Instance;
 
 	[SerializeField]
@@ -91,6 +92,7 @@ public class PlayerBehaviour : MonoBehaviour {
 				ActiveUseable?.Deselect();
 				ActiveUseable = useables[selectedUseableSlot];
 				ActiveUseable?.Select();
+				aimIk.solver.transform = ActiveUseable.IkAimTransform;
 			}
 		} else {
 			if (ActiveUseable) {
