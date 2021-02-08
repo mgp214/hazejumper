@@ -15,6 +15,7 @@ public class WelderBehaviour : Useable {
 
 	public Light arcLight;
 	public VisualEffect arcEffect;
+	public AudioSource arcEffectAudioSource;
 	private bool arcEffectIsPlaying = false;
 	public float minIntensity, maxIntensity;
 	[Range(0, 1)]
@@ -22,6 +23,9 @@ public class WelderBehaviour : Useable {
 
 	[Range(0, 1)]
 	public float arcFadeRate;
+
+	[Range(0, 1)]
+	public float arcVolumeChangeRate;
 
 	public Material weldMaterial;
 
@@ -90,10 +94,13 @@ public class WelderBehaviour : Useable {
 					- (ray.direction.normalized * weldBackoff);
 
 				if (!arcEffectIsPlaying) {
+					arcEffectAudioSource.Play();
+					arcEffectAudioSource.volume = 0;
 					arcEffect.Play();
 					arcEffectIsPlaying = true;
 				}
 				arcLight.intensity = Mathf.Lerp(arcLight.intensity, Random.Range(minIntensity, maxIntensity), arcInstability);
+				arcEffectAudioSource.volume = Mathf.Lerp(arcEffectAudioSource.volume, 1, arcVolumeChangeRate);
 				//don't create a weld if we're too close to an existing weld.
 				var distance = Vector3.Distance(ray.origin, adjustedHitPoint);
 				var nearbyThings = Physics.OverlapSphere(adjustedHitPoint, weldSize, LayerMask.GetMask("Chunks"));
@@ -110,6 +117,7 @@ public class WelderBehaviour : Useable {
 					CreateWeld(adjustedHitPoint);
 				}
 			} else if (arcEffectIsPlaying) {
+				arcEffectAudioSource.volume = Mathf.Lerp(arcEffectAudioSource.volume, 0, arcVolumeChangeRate);
 				arcEffect.Stop();
 				arcEffectIsPlaying = false;
 			}
@@ -124,6 +132,7 @@ public class WelderBehaviour : Useable {
 
 	private void Idle() {
 		arcLight.intensity = Mathf.Lerp(arcLight.intensity, 0, arcFadeRate);
+		arcEffectAudioSource.volume = Mathf.Lerp(arcEffectAudioSource.volume, 0, arcVolumeChangeRate);
 		if (cooldownRemaining > 0) {
 			cooldownRemaining -= Time.deltaTime;
 			cooldownRemaining = Mathf.Max(0, cooldownRemaining);
