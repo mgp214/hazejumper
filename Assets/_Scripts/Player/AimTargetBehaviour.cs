@@ -9,6 +9,9 @@ public class AimTargetBehaviour : MonoBehaviour {
 	private float currentDistance;
 	public float maxChange;
 
+	public float holsterAngle;
+	public float holsterHorizontalAmount;
+
 	[Range(0, 1)]
 	public float smoothing;
 
@@ -17,6 +20,29 @@ public class AimTargetBehaviour : MonoBehaviour {
 	}
 
 	void Update() {
+		if (PlayerBehaviour.Instance.ActiveUseable.SwitchedInFraction == 1) {
+			UpdateAimDistance();
+		} else {
+			UpdateSwitchingAimTarget();
+		}
+
+	}
+
+	/// <summary>
+	/// Updates the position of the aim target to lower/raise the weapon based on percent switched in/out
+	/// </summary>
+	void UpdateSwitchingAimTarget() {
+		// if (PlayerBehaviour.Instance.ActiveUseable.SwitchedInFraction == 0) 
+		target.position = transform.position + transform.forward * maxDistance;
+		var percentToRotate = 1 - PlayerBehaviour.Instance.ActiveUseable.SwitchedInFraction;
+		target.RotateAround(transform.position, transform.right, holsterAngle * percentToRotate);
+		target.position += percentToRotate * transform.right * holsterHorizontalAmount;
+	}
+
+	/// <summary>
+	/// Updates the position of the aim target based on what is in front of the camera.
+	/// </summary>
+	void UpdateAimDistance() {
 		var newDistance = maxDistance;
 		if (Physics.Raycast(
 				transform.position,

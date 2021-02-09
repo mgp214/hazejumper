@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SubspacerBehaviour : Useable {
-	public float deploySeconds;
 	public float range;
 	public float force;
 
 	private static SubspacerBehaviour _Instance;
-	private float deployedFraction;
 
 	[SerializeField]
 	private Chunk _Chunk;
@@ -24,34 +22,6 @@ public class SubspacerBehaviour : Useable {
 	public bool IsEligible { get => _IsEligible; private set => _IsEligible = value; }
 
 	public Chunk Chunk { get => _Chunk; }
-
-	public override bool SwitchIn() {
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction += Time.deltaTime;
-
-		if (deployedFraction >= deploySeconds) {
-			deployedFraction = deploySeconds;
-			idleAvailable = true;
-			return true;
-		} else {
-			idleAvailable = false;
-		}
-		return false;
-	}
-
-	public override bool SwitchOut() {
-		idleAvailable = false;
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction -= Time.deltaTime;
-
-		if (deployedFraction <= 0) {
-			deployedFraction = 0;
-			return true;
-		}
-		return false;
-	}
 
 	public void GrabChunk(Chunk chunk) {
 		this._Chunk = chunk;

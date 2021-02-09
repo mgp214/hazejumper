@@ -11,7 +11,6 @@ public class WelderBehaviour : Useable {
 	public float weldMinDistance;
 	public float cooldown;
 	public float compressionStrength, tensileStrength, shearStrength;
-	public float deploySeconds;
 
 	public Light arcLight;
 	public VisualEffect arcEffect;
@@ -30,37 +29,7 @@ public class WelderBehaviour : Useable {
 	public Material weldMaterial;
 
 	private static int weldCount = 0;
-	private float deployedFraction;
 	private float cooldownRemaining;
-
-	public override bool SwitchIn() {
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-		if (deployedFraction == deploySeconds)
-			return true;
-		deployedFraction += Time.deltaTime;
-
-		if (deployedFraction >= deploySeconds) {
-			deployedFraction = deploySeconds;
-			idleAvailable = true;
-			return true;
-		} else {
-			idleAvailable = false;
-		}
-		return false;
-	}
-
-	public override bool SwitchOut() {
-		idleAvailable = false;
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction -= Time.deltaTime;
-
-		if (deployedFraction <= 0) {
-			deployedFraction = 0;
-			return true;
-		}
-		return false;
-	}
 
 	void Start() {
 		onSelected += Selected;

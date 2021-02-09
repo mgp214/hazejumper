@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class ManipulatorBehaviour : Useable {
 	public int maxFreezes;
-	public float deploySeconds;
 	public LayerMask grabbableLayers;
 	public float range;
 	public float offsetAmount;
@@ -21,7 +20,6 @@ public class ManipulatorBehaviour : Useable {
 
 	public List<GameObject> anchorList;
 	public List<Chunk> anchoredChunks;
-	private float deployedFraction;
 	public GameObject proxy;
 	private Rigidbody chunkJustAnchored;
 
@@ -30,21 +28,6 @@ public class ManipulatorBehaviour : Useable {
 	/// </summary>
 	public static ManipulatorBehaviour Instance { get; private set; }
 
-	/// <summary>
-	/// Destroy an anchor.
-	/// </summary>
-	/// <param name="anchor">The Gameobject containing the ManipulatorAnchorBehaviour to destroy.</param>
-	//public void RemoveAnchor(GameObject anchor, Chunk anchoredChunk) {
-	//	var proxy = anchor?.GetComponent<ManipulatorAnchorBehaviour>()?.proxy;
-	//	if (proxy != null) {
-	//		foreach (var sj in proxy.GetComponents<SpringJoint>()) {
-	//			sj.connectedBody = null;
-	//		}
-	//	}
-	//	anchorList?.Remove(anchor);
-	//	anchoredChunks.Remove(anchoredChunk);
-	//	Destroy(anchor);
-	//}
 	/// <summary>
 	/// Destroy an anchor.
 	/// </summary>
@@ -60,34 +43,6 @@ public class ManipulatorBehaviour : Useable {
 		anchorList?.Remove(anchor);
 		anchoredChunks.Remove(anchoredChunk);
 		Destroy(anchor);
-	}
-
-	public override bool SwitchIn() {
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction += Time.deltaTime;
-
-		if (deployedFraction >= deploySeconds) {
-			deployedFraction = deploySeconds;
-			idleAvailable = true;
-			return true;
-		} else {
-			idleAvailable = false;
-		}
-		return false;
-	}
-
-	public override bool SwitchOut() {
-		idleAvailable = false;
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction -= Time.deltaTime;
-
-		if (deployedFraction <= 0) {
-			deployedFraction = 0;
-			return true;
-		}
-		return false;
 	}
 
 	/// <summary>

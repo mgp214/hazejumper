@@ -8,7 +8,6 @@ public class WirerBehaviour : Useable {
 	public float range;
 	public float currentPointDistance;
 	public float pointDistanceDelta;
-	public float deploySeconds;
 	public GameObject nodeListUI;
 	public GameObject nodeUITemplate;
 	public ScrollRect scroll;
@@ -32,39 +31,8 @@ public class WirerBehaviour : Useable {
 	private Vector3 currentPoint;
 	private Vector3 startPoint;
 
-	private float deployedFraction;
-
 	[SerializeField]
 	private GameObject[] visibleWireSegments;
-
-	public override bool SwitchIn() {
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-		if (deployedFraction == deploySeconds)
-			return true;
-		deployedFraction += Time.deltaTime;
-
-		if (deployedFraction >= deploySeconds) {
-			deployedFraction = deploySeconds;
-			idleAvailable = true;
-			return true;
-		} else {
-			idleAvailable = false;
-		}
-		return false;
-	}
-
-	public override bool SwitchOut() {
-		idleAvailable = false;
-		transform.rotation = transform.parent.rotation * Quaternion.Euler(90 - (90 * deployedFraction / deploySeconds), 0, 0);
-
-		deployedFraction -= Time.deltaTime;
-
-		if (deployedFraction <= 0) {
-			deployedFraction = 0;
-			return true;
-		}
-		return false;
-	}
 
 	void Start() {
 		onSelected += Selected;

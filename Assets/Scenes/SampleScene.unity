@@ -1340,7 +1340,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527295727}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.148, y: -0.145, z: 0.099}
+  m_LocalPosition: {x: 0.635, y: -0.875, z: -0.389}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1525639830}
@@ -2960,6 +2960,11 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1032614776}
+    - target: {fileID: 7601256077040314368, guid: 823f22388b6bf4349b96ecdc3620c64f,
+        type: 3}
+      propertyPath: switchDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8473453839829576935, guid: 823f22388b6bf4349b96ecdc3620c64f,
         type: 3}
       propertyPath: m_IsActive
@@ -3323,6 +3328,11 @@ PrefabInstance:
       propertyPath: IkAimTransform
       value: 
       objectReference: {fileID: 1741805571}
+    - target: {fileID: 1103684174492313563, guid: 62157f3313a5f5c4b924f6212ec278ad,
+        type: 3}
+      propertyPath: switchDuration
+      value: 0.85
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62157f3313a5f5c4b924f6212ec278ad, type: 3}
 --- !u!1 &1032614775
@@ -3443,6 +3453,8 @@ MonoBehaviour:
     m_Bits: 8449
   maxDistance: 15
   maxChange: 3
+  holsterAngle: 90
+  holsterHorizontalAmount: 5
   smoothing: 0.052
 --- !u!114 &1032614781
 MonoBehaviour:
@@ -4189,6 +4201,21 @@ PrefabInstance:
         type: 3}
       propertyPath: arcVolumeChangeRate
       value: 0.197
+      objectReference: {fileID: 0}
+    - target: {fileID: 2305682279507116693, guid: a8f665405dc476b449a0cbf45c61d6d0,
+        type: 3}
+      propertyPath: switchDuration
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2305682279507116693, guid: a8f665405dc476b449a0cbf45c61d6d0,
+        type: 3}
+      propertyPath: initialIkAimTransformRotation.x
+      value: -0.4909114
+      objectReference: {fileID: 0}
+    - target: {fileID: 2305682279507116693, guid: a8f665405dc476b449a0cbf45c61d6d0,
+        type: 3}
+      propertyPath: initialIkAimTransformRotation.w
+      value: -0.8712095
       objectReference: {fileID: 0}
     - target: {fileID: 2305682279507116695, guid: a8f665405dc476b449a0cbf45c61d6d0,
         type: 3}

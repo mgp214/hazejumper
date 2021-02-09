@@ -10,6 +10,11 @@ public class Useable : MonoBehaviour {
 
 	public Transform IkAimTransform;
 
+	public float switchDuration;
+	private float switchProgressDuration;
+
+	public float SwitchedInFraction { get { return switchProgressDuration / switchDuration; } }
+
 	/// <summary>
 	/// Called each frame the primary action is held down.
 	/// </summary>
@@ -72,7 +77,7 @@ public class Useable : MonoBehaviour {
 
 	protected bool primary = false, secondary = false, modifier = false;
 
-	protected bool idleAvailable;
+	protected bool IdleAvailable { get { return SwitchedInFraction == 1f; } }
 
 	/// <summary>
 	/// Indicates whether or not this Useable can be switched out at the moment.
@@ -83,13 +88,29 @@ public class Useable : MonoBehaviour {
 	/// Incrementally switches this tool into selection.
 	/// </summary>
 	/// <returns>True when complete, otherwise false.</returns>
-	public virtual bool SwitchIn() { return true; }
+	public virtual bool SwitchIn() {
+		if (switchProgressDuration == switchDuration) return true;
+		switchProgressDuration += Time.deltaTime;
+		if (switchProgressDuration >= switchDuration) {
+			switchProgressDuration = switchDuration;
+			return true;
+		}
+		return false;
+	}
 
 	/// <summary>
 	/// Incrementally switches this tool out of selection.
 	/// </summary>
 	/// <returns>True when complete, otherwise false.</returns>
-	public virtual bool SwitchOut() { return true; }
+	public virtual bool SwitchOut() {
+		if (switchProgressDuration == 0) return true;
+		switchProgressDuration -= Time.deltaTime;
+		if (switchProgressDuration <= 0) {
+			switchProgressDuration = 0;
+			return true;
+		}
+		return false;
+	}
 
 	/// <summary>
 	/// Called when this Useable is deselected.
@@ -113,7 +134,7 @@ public class Useable : MonoBehaviour {
 	/// <param name="modifier">The value of the action modifier input</param>
 	public void SetInput(bool primary, bool secondary, bool modifier) {
 		//idle if we aren't pressing anything for a full frame and it's available (e.g. not switching)
-		if (idleAvailable && !(primary && secondary && this.primary && this.secondary)) {
+		if (IdleAvailable && !(primary && secondary && this.primary && this.secondary)) {
 			onIdle?.Invoke();
 		}
 
