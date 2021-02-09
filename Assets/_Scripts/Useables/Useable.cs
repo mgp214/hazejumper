@@ -9,6 +9,7 @@ using UnityEngine;
 public class Useable : MonoBehaviour {
 
 	public Transform IkAimTransform;
+	public HandData handData;
 
 	public float switchDuration;
 	private float switchProgressDuration;
@@ -90,6 +91,11 @@ public class Useable : MonoBehaviour {
 	/// <returns>True when complete, otherwise false.</returns>
 	public virtual bool SwitchIn() {
 		if (switchProgressDuration == switchDuration) return true;
+		var handDataController = PlayerBehaviour.Instance.handDataController;
+		if (switchProgressDuration == 0) {
+			handDataController.handData = handData;
+			handDataController.Apply();
+		}
 		switchProgressDuration += Time.deltaTime;
 		if (switchProgressDuration >= switchDuration) {
 			switchProgressDuration = switchDuration;

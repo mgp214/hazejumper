@@ -13,6 +13,7 @@ public class PlayerBehaviour : MonoBehaviour {
 	public bool isBusy;
 	public Text interactionText;
 	public AimIK aimIk;
+	public HandDataController handDataController;
 	private static PlayerBehaviour _Instance;
 
 	[SerializeField]

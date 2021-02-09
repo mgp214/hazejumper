@@ -6,6 +6,7 @@ public class AimTargetBehaviour : MonoBehaviour {
 	public Transform target;
 	public LayerMask raycastLayers;
 	public float maxDistance;
+	public float minDistance;
 	private float currentDistance;
 	public float maxChange;
 
@@ -52,6 +53,7 @@ public class AimTargetBehaviour : MonoBehaviour {
 				raycastLayers)) {
 			newDistance = (hit.point - transform.position).magnitude;
 		}
+		newDistance = Mathf.Clamp(newDistance, minDistance, maxDistance);
 
 		if (currentDistance > newDistance) {
 			if (currentDistance - newDistance > maxChange)
