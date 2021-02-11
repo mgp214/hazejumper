@@ -122,6 +122,7 @@ public class Useable : MonoBehaviour {
 	/// Called when this Useable is deselected.
 	/// </summary>
 	public void Deselect() {
+		transform.GetChild(0).gameObject.SetActive(false);
 		onDeselected?.Invoke();
 	}
 
@@ -129,6 +130,7 @@ public class Useable : MonoBehaviour {
 	/// Called when this Useable is selected.
 	/// </summary>
 	public void Select() {
+		transform.GetChild(0).gameObject.SetActive(true);
 		onSelected?.Invoke();
 	}
 

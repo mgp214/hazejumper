@@ -72,8 +72,6 @@ public class SubspacerBehaviour : Useable {
 	}
 
 	private void Start() {
-		onSelected += Selected;
-		onDeselected += Deselected;
 		onPrimaryDown += Grab;
 		if (_Instance != null)
 			throw new System.Exception("Cannot instantiate more than one Subspacer!");
@@ -109,19 +107,5 @@ public class SubspacerBehaviour : Useable {
 
 	private void Update() {
 		CalculatePosition();
-	}
-
-	/// <summary>
-	/// Logic for when this tool is selected from the tool list.
-	/// </summary>
-	private void Selected() {
-		transform.GetChild(0).gameObject.SetActive(true);
-	}
-
-	/// <summary>
-	/// Logic for when this tool is deselected from the tool list.
-	/// </summary>
-	private void Deselected() {
-		transform.GetChild(0).gameObject.SetActive(false);
 	}
 }

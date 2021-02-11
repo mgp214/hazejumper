@@ -32,8 +32,6 @@ public class WelderBehaviour : Useable {
 	private float cooldownRemaining;
 
 	void Start() {
-		onSelected += Selected;
-		onDeselected += Deselected;
 		onPrimary += Weld;
 		onPrimaryUp += () => {
 			arcEffectIsPlaying = false;
@@ -106,19 +104,5 @@ public class WelderBehaviour : Useable {
 			cooldownRemaining -= Time.deltaTime;
 			cooldownRemaining = Mathf.Max(0, cooldownRemaining);
 		}
-	}
-
-	/// <summary>
-	/// Logic for when this tool is selected from the tool list.
-	/// </summary>
-	private void Selected() {
-		transform.GetChild(0).gameObject.SetActive(true);
-	}
-
-	/// <summary>
-	/// Logic for when this tool is deselected from the tool list.
-	/// </summary>
-	private void Deselected() {
-		transform.GetChild(0).gameObject.SetActive(false);
 	}
 }

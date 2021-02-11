@@ -35,8 +35,6 @@ public class WirerBehaviour : Useable {
 	private GameObject[] visibleWireSegments;
 
 	void Start() {
-		onSelected += Selected;
-		onDeselected += Deselected;
 		onPrimaryDown += Wire;
 		onSecondaryDown += CancelWire;
 		nodeListUIParent = nodeListUI.transform.parent.parent.gameObject;
@@ -263,19 +261,5 @@ public class WirerBehaviour : Useable {
 		for (int i = 1; i < nodeListUI.transform.childCount; i++) {
 			Destroy(nodeListUI.transform.GetChild(i).gameObject);
 		}
-	}
-
-	/// <summary>
-	/// Logic for when this tool is selected from the tool list.
-	/// </summary>
-	private void Selected() {
-		transform.GetChild(0).gameObject.SetActive(true);
-	}
-
-	/// <summary>
-	/// Logic for when this tool is deselected from the tool list.
-	/// </summary>
-	private void Deselected() {
-		transform.GetChild(0).gameObject.SetActive(false);
 	}
 }

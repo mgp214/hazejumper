@@ -81,8 +81,6 @@ public class ManipulatorBehaviour : Useable {
 		onPrimary += Grab;
 		onPrimaryUp += DropGrabTarget;
 		onSecondaryDown += ToggleAnchor;
-		onSelected += Selected;
-		onDeselected += Deselected;
 		CanSwitchOut = true;
 	}
 
@@ -168,19 +166,5 @@ public class ManipulatorBehaviour : Useable {
 				}
 			}
 		}
-	}
-
-	/// <summary>
-	/// Logic for when this tool is selected from the tool list.
-	/// </summary>
-	private void Selected() {
-		transform.GetChild(0).gameObject.SetActive(true);
-	}
-
-	/// <summary>
-	/// Logic for when this tool is deselected from the tool list.
-	/// </summary>
-	private void Deselected() {
-		transform.GetChild(0).gameObject.SetActive(false);
 	}
 }

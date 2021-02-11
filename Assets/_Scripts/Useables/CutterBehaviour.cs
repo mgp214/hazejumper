@@ -10,8 +10,6 @@ public class CutterBehaviour : Useable {
 	public float maxLayerRetries;
 
 	void Start() {
-		onSelected += Selected;
-		onDeselected += Deselected;
 		onPrimary += () => OnPrimary(false);
 		onPrimaryUp += () => OnPrimary(true);
 		CanSwitchOut = true;
@@ -36,19 +34,5 @@ public class CutterBehaviour : Useable {
 				Debug.DrawLine(hit.point, reverseCutStartPoint, Color.red, up ? 2 : Time.deltaTime);
 			}
 		}
-	}
-
-	/// <summary>
-	/// Logic for when this tool is selected from the tool list.
-	/// </summary>
-	private void Selected() {
-		transform.GetChild(0).gameObject.SetActive(true);
-	}
-
-	/// <summary>
-	/// Logic for when this tool is deselected from the tool list.
-	/// </summary>
-	private void Deselected() {
-		transform.GetChild(0).gameObject.SetActive(false);
 	}
 }

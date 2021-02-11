@@ -4,14 +4,20 @@ using UnityEngine;
 using UnityEditor;
 
 public class HandDataController : MonoBehaviour {
+	[SerializeField]
 	public Transform pinky0, pinky1, pinky2;
+	[SerializeField]
 	public Transform ring0, ring1, ring2;
+	[SerializeField]
 	public Transform middle0, middle1, middle2;
+	[SerializeField]
 	public Transform index0, index1, index2;
+	[SerializeField]
 	public Transform thumb0, thumb1, thumb2;
 
 	[ContextMenuItem("Save current", "Capture")]
 	[ContextMenuItem("Apply to hand", "Apply")]
+	[SerializeField]
 	public HandData handData;
 	public void Capture() {
 		handData.pinky0 = pinky0.localRotation;
@@ -34,6 +40,7 @@ public class HandDataController : MonoBehaviour {
 		handData.thumb1 = thumb1.localRotation;
 		handData.thumb2 = thumb2.localRotation;
 
+		EditorUtility.SetDirty(handData);
 		AssetDatabase.SaveAssets();
 	}
 
