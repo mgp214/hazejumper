@@ -149,7 +149,7 @@ public class ManipulatorBehaviour : Useable {
 			DropGrabTarget();
 			chunkJustAnchored = target;
 		} else {
-			//anchor or anchor whatever we are looking at.
+			//anchor or unanchor whatever we are looking at.
 			//Debug.DrawLine(barrel.position, barrel.position + barrel.forward * range, Color.red, 1);
 			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, range, grabbableLayers)) {
