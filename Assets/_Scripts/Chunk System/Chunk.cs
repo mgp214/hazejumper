@@ -198,6 +198,9 @@ public class Chunk : MonoBehaviour {
 		}
 		foreach (var thing in things) {
 			thing.gameObject.layer = gameObject.layer;
+			foreach (var t in thing.transform.GetComponentsInChildren<Transform>(includeInactive: true)) {
+				t.gameObject.layer = gameObject.layer;
+			}
 		}
 		State = state;
 	}
