@@ -13,6 +13,10 @@ public class SacBehaviour : MonoBehaviour {
 	public float linearTransferRatio;
 
 	public RawImage sacView;
+
+	public Vector2 minimizedSize;
+	public Vector2 minimizedAnchorMin, minimizedAnchorMax;
+	public Vector2 maximizedAnchorMin, maximizedAnchorMax;
 	public float zoomCoefficient;
 	public GameObject player, cameraObj;
 	private static SacBehaviour _Instance;
@@ -51,10 +55,12 @@ public class SacBehaviour : MonoBehaviour {
 		Instance = this;
 		rigidbody = GetComponent<Rigidbody>();
 		contents = new List<Rigidbody>();
-		size = 2;
 		IsMaximized = false;
-		sacView.rectTransform.sizeDelta = new Vector2(viewSize, viewSize);
-		sacView.rectTransform.anchoredPosition = new Vector2((Screen.width - viewSize) / 2f, -(Screen.height - viewSize) / 2f);
+		minimizedAnchorMin = sacView.rectTransform.anchorMin;
+		minimizedAnchorMax = sacView.rectTransform.anchorMax;
+		minimizedSize = sacView.rectTransform.sizeDelta;
+		// sacView.rectTransform.sizeDelta = new Vector2(viewSize, viewSize);
+		// sacView.rectTransform.anchoredPosition = new Vector2((Screen.width - viewSize) / 2f, -(Screen.height - viewSize) / 2f);
 	}
 
 	private void ToggleCursor(bool locked) {
@@ -74,9 +80,18 @@ public class SacBehaviour : MonoBehaviour {
 	private void Maximize() {
 		var minDimension = Mathf.Min(Screen.width, Screen.height);
 		sacView.rectTransform.sizeDelta = new Vector2(minDimension, minDimension);
+		sacView.rectTransform.pivot = Vector2.one * 0.5f;
 		screenWidth = Screen.width;
 		screenHeight = Screen.height;
-		sacView.rectTransform.anchoredPosition = Vector2.zero;
+		sacView.rectTransform.anchorMin = Vector2.one * 0.5f;
+		sacView.rectTransform.anchorMax = Vector2.one * 0.5f;
+	}
+
+	private void Minimize() {
+		sacView.rectTransform.pivot = Vector2.right;
+		sacView.rectTransform.sizeDelta = minimizedSize;
+		sacView.rectTransform.anchorMin = minimizedAnchorMin;
+		sacView.rectTransform.anchorMax = minimizedAnchorMax;
 	}
 
 	private void Update() {
@@ -87,9 +102,10 @@ public class SacBehaviour : MonoBehaviour {
 				Maximize();
 				ToggleCursor(false);
 			} else {
+				Minimize();
 				ToggleCursor(true);
-				sacView.rectTransform.sizeDelta = new Vector2(viewSize, viewSize);
-				sacView.rectTransform.anchoredPosition = new Vector2((Screen.width - viewSize) / 2f, -(Screen.height - viewSize) / 2f);
+				// sacView.rectTransform.sizeDelta = minimizedSize;//new Vector2(viewSize, viewSize);
+				// sacView.rectTransform.anchoredPosition = minimizedPosition;//new Vector2((Screen.width - viewSize) / 2f, -(Screen.height - viewSize) / 2f);
 				if (SubspacerBehaviour.Instance.Chunk != null) {
 					SubspacerBehaviour.Instance.SwitchSpace();
 				}

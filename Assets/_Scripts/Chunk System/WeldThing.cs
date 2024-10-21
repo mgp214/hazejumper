@@ -92,7 +92,7 @@ public class WeldThing : Thing {
 	/// </summary>
 	public float compressionStrength, tensileStrength, shearStrength;
 
-	public virtual void Break() {
+	public virtual void Break(Vector3 transmittedForce) {
 		var disconnectedThings = new List<Thing>(connectedThings);
 		while (connectedThings.Count > 0) {
 			connectedThings[0].Disconnect(this);
@@ -109,7 +109,7 @@ public class WeldThing : Thing {
 		}
 		foreach (var thing in thingsToMakeChunksFrom) {
 			if (thing != this) {
-				Chunk.Create(thing);
+				Chunk.Create(thing, parentChunk.rigidbody.velocity, parentChunk.rigidbody.angularVelocity);
 			}
 		}
 		Destroy(gameObject);

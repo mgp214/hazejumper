@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChunkManager : MonoBehaviour {
 	public float forceMessageThreshold;
 	public float forceTransmissionCoefficient;
+	public float breakingWeldForceTransmissionCoefficient;
 
 	public static ChunkManager Instance { get; private set; }
 

@@ -6,7 +6,8 @@ using UnityEngine;
 /// A Proxy object that lives between the a "stiff" object (FixedJoint) and "soft/wiggly object (array of SpringJoints)
 /// </summary>
 public class ManipulatorProxyBehaviour : MonoBehaviour {
-	private GameObject fixedFollowObj, fixedObj, springObj;
+	private GameObject fixedFollowObj, fixedObj;
+	public GameObject springObj;
 	private FixedJoint fixedJoint;
 
 	/// <summary>
@@ -22,7 +23,7 @@ public class ManipulatorProxyBehaviour : MonoBehaviour {
 	/// <param name="massScale">The amount to scale the force between the soft joint object and proxy. Higher values make the mass of the soft joint body less impactful.</param>
 	/// <returns></returns>
 	public static GameObject Create(GameObject fixedObj, GameObject springObj, float breakForce, float breakTorque, float offsetAmount, float damper, float spring, float massScale) {
-		var gameObject = new GameObject("Manipulator Proxy");
+		var gameObject = new GameObject($"Manipulator Proxy for {springObj.name}");
 
 
 		gameObject.transform.position = springObj.transform.position;

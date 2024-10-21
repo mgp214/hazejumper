@@ -45,7 +45,7 @@ public class Thing : MonoBehaviour {
 		connectedThings = new List<Thing>();
 		connectionVectors = new Dictionary<Thing, Vector3>();
 		if (parentChunk == null) {
-			parentChunk = Chunk.Create(this);
+			parentChunk = Chunk.Create(this, Vector3.zero, Vector3.zero);
 		}
 		initialized = true;
 	}
@@ -104,7 +104,7 @@ public class Thing : MonoBehaviour {
 	}
 
 	private void Update() {
-		var cumulatedForce = Vector3.zero;
+		var accumulatedForce = Vector3.zero;
 		var forceSenders = new List<Thing>();
 		//var announcedMessages = false;
 		while (messageQueue.Count > 0) {
@@ -139,19 +139,19 @@ public class Thing : MonoBehaviour {
 						|| tension > weld.tensileStrength
 						|| compression > weld.compressionStrength) {
 						//Debug.Log($"{name} breaking!");
-						weld.Break();
+						weld.Break(accumulatedForce);
 					} else {
-						cumulatedForce += forceMsg.Force;
+						accumulatedForce += forceMsg.Force;
 					}
 				} else {
-					cumulatedForce += forceMsg.Force;
+					accumulatedForce += forceMsg.Force;
 				}
 				if (message.Sender is Thing) {
 					forceSenders.Add((Thing)message.Sender);
 				}
 			}
 		}
-		if (cumulatedForce.magnitude >= ChunkManager.Instance.forceMessageThreshold) {
+		if (accumulatedForce.magnitude >= ChunkManager.Instance.forceMessageThreshold) {
 			//Debug.Log($"{name}: cumulatedForce force: {cumulatedForce}[{cumulatedForce.magnitude}]");
 			var recipients = connectedThings.Where(t => !forceSenders.Contains(t)).ToList();
 			//if (recipients.Count > 0) {
@@ -160,7 +160,7 @@ public class Thing : MonoBehaviour {
 			//	Debug.Log($"{name} at a dead end.");
 			//}
 			foreach (var thing in recipients) {
-				var forceMessage = new ForceMessage(this, cumulatedForce * ChunkManager.Instance.forceTransmissionCoefficient / recipients.Count);
+				var forceMessage = new ForceMessage(this, accumulatedForce * ChunkManager.Instance.forceTransmissionCoefficient / recipients.Count);
 				//Debug.Log($"       {thing.name} -->  {forceMessage.Force}[{forceMessage.Force.magnitude}]");
 				thing.QueueMessage(forceMessage);
 			}

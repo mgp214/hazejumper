@@ -17,12 +17,20 @@ public class Chunk : MonoBehaviour {
 
 	public Thing[] visibleThings;
 
+	public string chunkName;
+
 	private static int chunkCount = 0;
 
 	private List<Thing> things = new List<Thing>();
 
 	private bool initialized = false;
 	public SpaceState State { get; private set; }
+
+	public int TotalNonWeldThings {
+		get {
+			return (from t in visibleThings where t.GetType() != typeof(WeldThing) select t).Count();
+		}
+	}
 
 	/// <summary>
 	/// Returns true if and only if there is only one Thing in this Chunk.
@@ -99,12 +107,14 @@ public class Chunk : MonoBehaviour {
 	/// </summary>
 	/// <param name="thing">The Thing to encapulate in the new Chunk.</param>
 	/// <returns>Newly built Chunk.</returns>
-	public static Chunk Create(Thing thing) {
-		var gameObject = new GameObject("Chunk " + ++chunkCount);
+	public static Chunk Create(Thing thing, Vector3 initialVelocity, Vector3 initialAngularVelocity) {
+		var chunkName = $"Chunk {++chunkCount}";
+		var gameObject = new GameObject(chunkName);
 		gameObject.AddComponent<Rigidbody>();
 		gameObject.AddComponent<Chunk>();
 
 		var chunk = gameObject.GetComponent<Chunk>();
+		chunk.chunkName = chunkName;
 		chunk.AddThings(thing.GetConnectedThings(new List<Thing>()));
 		chunk.Initialize();
 		gameObject.layer = thing.gameObject.layer;
@@ -117,6 +127,8 @@ public class Chunk : MonoBehaviour {
 			chunk.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 			SacBehaviour.Instance.AddContents(chunk.rigidbody);
 		}
+		chunk.rigidbody.velocity = initialVelocity;
+		chunk.rigidbody.angularVelocity = initialAngularVelocity;
 		return chunk;
 	}
 
@@ -175,11 +187,13 @@ public class Chunk : MonoBehaviour {
 		switch (state) {
 			case SpaceState.Normal:
 				rigidbody.interpolation = RigidbodyInterpolation.None;
+				gameObject.name = chunkName;
 				break;
 
 			case SpaceState.Subspace:
 				SacBehaviour.Instance.AddContents(rigidbody);
 				rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+				gameObject.name = $"Subspace {chunkName}";
 				break;
 
 			case SpaceState.NormalPreview:

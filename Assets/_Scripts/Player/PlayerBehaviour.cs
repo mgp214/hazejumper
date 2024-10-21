@@ -18,6 +18,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
 	[SerializeField]
 	private int selectedUseableSlot;
+	public Text currentToolTextElement;
+	public Text currentToolExtraTextElement;
 
 	private new Rigidbody rigidbody;
 	private float initialMassCoefficient;
@@ -71,7 +73,7 @@ public class PlayerBehaviour : MonoBehaviour {
 		//handle switching between useables
 		var currentSlot = selectedUseableSlot;
 		if (ActiveUseable.CanSwitchOut && !SacBehaviour.Instance.IsMaximized
-			&& !(ActiveUseable is WirerBehaviour && Input.GetButton("Action Modifier"))) {
+				&& !(ActiveUseable is WirerBehaviour && Input.GetButton("Action Modifier"))) {
 			if (Input.GetAxis("Switch Equipped") < 0) {
 				if (selectedUseableSlot + 1 == useables.Length) {
 					selectedUseableSlot = 0;
@@ -110,6 +112,8 @@ public class PlayerBehaviour : MonoBehaviour {
 			}
 		}
 		interactionText.text = string.Empty;
+		currentToolTextElement.text = ActiveUseable.name;
+		currentToolExtraTextElement.text = ActiveUseable.extraValue;
 		var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
 		if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, 2f, Chunk.GetLayerMask(Chunk.SpaceState.Normal))) {
 			IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();

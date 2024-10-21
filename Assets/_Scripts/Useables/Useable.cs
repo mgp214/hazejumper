@@ -14,6 +14,8 @@ public class Useable : MonoBehaviour {
 	public float switchDuration;
 	private float switchProgressDuration;
 
+	public string extraValue = string.Empty;
+
 	public float SwitchedInFraction { get { return switchProgressDuration / switchDuration; } }
 
 	/// <summary>

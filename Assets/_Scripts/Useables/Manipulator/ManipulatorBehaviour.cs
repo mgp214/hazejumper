@@ -69,6 +69,12 @@ public class ManipulatorBehaviour : Useable {
 
 	private void Update() {
 		CanSwitchOut = proxy == null;
+		if (proxy != null && proxy.gameObject.GetComponent<ManipulatorProxyBehaviour>()?.springObj != null) {
+			extraValue = $"Manipulating {proxy.GetComponent<ManipulatorProxyBehaviour>().springObj.name}";
+		} else {
+			extraValue = string.Empty;
+		}
+		
 	}
 
 	void Start() {
