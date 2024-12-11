@@ -21,7 +21,7 @@ public class ShoverBehaviour : Useable {
 		}
 	}
 
-	// the current position on the carge force curve (from 0.0 to 1.0)
+	// the current position on the charge force curve (from 0.0 to 1.0)
 	[SerializeField]
 	private float forceCurvePosition;
 
@@ -29,6 +29,9 @@ public class ShoverBehaviour : Useable {
 		this.onPrimary += Charge;
 		this.onPrimaryDown += StartChargingShove;
 		this.onPrimaryUp += Shove;
+		this.onSecondary += Charge;
+		this.onSecondaryDown += StartChargingShove;
+		this.onSecondaryUp += ShoveChunk;
 	}
 
 	public void StartChargingShove() {
@@ -63,5 +66,18 @@ public class ShoverBehaviour : Useable {
 			}
 			forceCurvePosition = 0;
 			isCharging = false;
+	}
+
+	public void ShoveChunk() {
+		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit, range, grabbableLayers)) {
+			var thing = hit.collider.gameObject.GetComponent<Thing>() ?? hit.collider.GetComponentInParent<Thing>();
+			if (thing != null) {
+				hit.rigidbody.AddForce(ray.direction.normalized * CurrentForce);
+				thing.QueueMessage(new ForceMessage(PlayerBehaviour.Instance, ray.direction.normalized * CurrentForce));
+			}
+		}
+		forceCurvePosition = 0;
+		isCharging = false;
 	}
 }
