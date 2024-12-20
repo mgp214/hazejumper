@@ -109,7 +109,7 @@ public class WeldThing : Thing {
 		}
 		foreach (var thing in thingsToMakeChunksFrom) {
 			if (thing != this) {
-				Chunk.Create(thing, parentChunk.rigidbody.velocity, parentChunk.rigidbody.angularVelocity);
+				Chunk.Create(thing, parentChunk.rigidbody.velocity + transmittedForce, parentChunk.rigidbody.angularVelocity);
 			}
 		}
 		Destroy(gameObject);

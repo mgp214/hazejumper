@@ -160,7 +160,7 @@ public class Thing : MonoBehaviour {
 			//	Debug.Log($"{name} at a dead end.");
 			//}
 			foreach (var thing in recipients) {
-				var forceMessage = new ForceMessage(this, accumulatedForce * ChunkManager.Instance.forceTransmissionCoefficient / recipients.Count);
+				var forceMessage = new ForceMessage(this, accumulatedForce * ChunkManager.Instance.forceTransmissionCoefficient / (float)recipients.Count);
 				//Debug.Log($"       {thing.name} -->  {forceMessage.Force}[{forceMessage.Force.magnitude}]");
 				thing.QueueMessage(forceMessage);
 			}
